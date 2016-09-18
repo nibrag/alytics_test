@@ -30,7 +30,8 @@
             <tbody>
             {% for item in data %}
                 <tr><td>{{ item.name }}</td>
-                <td>{{ item.data|truncatechars:100 }}</td></tr>
+                <td>{{ item.data|truncatechars:100 }}</td>
+                <td>{{ item.result }}</td></tr>
             {% endfor %}
             </tbody>
         </table>

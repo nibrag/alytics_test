@@ -19,4 +19,4 @@ class AddDataForm(forms.ModelForm):
 
     class Meta:
         model = Data
-        fields = '__all__'
+        fields = ('name', 'data')
