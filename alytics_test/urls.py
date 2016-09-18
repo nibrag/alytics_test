@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from app.views import index
+from app.views import index, run_calculator
 
 urlpatterns = [
-    url(r'^$', index, name='index')
+    url(r'^$', index, name='index'),
+    url(r'^calculate$', run_calculator, name='run_calculator')
 ]

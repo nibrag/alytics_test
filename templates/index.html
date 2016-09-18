@@ -39,9 +39,11 @@
                 {% endif %}
             </tbody>
         </table>
-        <form name="/calculate">
+        <form action="/calculate">
             <div class="span2">
-                <input type="submit" value="Запустить обработку">
+            <button type="submit">
+                {% if calc_started %}<i class=" icon-ok"></i>{% endif %} Запустить проверку
+            </button>
             </div>
             <div class="span10">
                 <span class="pull-right">

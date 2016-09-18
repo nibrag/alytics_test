@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
 from .models import Data, Calculate, ErrorLog
 from .forms import AddDataForm
 
@@ -16,4 +17,9 @@ def index(request):
         form = AddDataForm()
     return render(request, 'index.html', {
         'data': data, 'form': form,
-        'calculate': calc, 'error_logs': error_logs})
+        'calculate': calc, 'error_logs': error_logs,
+        'calc_started': request.GET.get('calc_started') == 'yes'})
+
+
+def run_calculator(request):
+    return redirect(reverse('index') + '?calc_started=yes')
