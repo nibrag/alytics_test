@@ -12,7 +12,7 @@ class AddDataForm(forms.ModelForm):
     def clean_data(self):
         try:
             data = json.loads(self.cleaned_data['data'])
-            if not isinstance(data, dict):
+            if not isinstance(data, list):
                 raise ValueError
         except (TypeError, ValueError):
             raise forms.ValidationError('Неверный json объект')
