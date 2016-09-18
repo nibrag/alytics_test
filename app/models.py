@@ -10,4 +10,10 @@ class Data(models.Model):
 
 class ErrorLog(models.Model):
     ts = models.DateTimeField()
-    error = models.TextField()
+    msg = models.TextField()
+    data = models.ForeignKey(Data)
+
+
+class Calculate(models.Model):
+    ts = models.DateTimeField()
+    error = models.ForeignKey(ErrorLog)
