@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import JSONField
 class Data(models.Model):
     name = models.CharField(max_length=129)
     data = JSONField()
-    result = JSONField(default={})
+    result = JSONField(default={}, null=True)
 
 
 class ErrorLog(models.Model):
@@ -16,4 +16,6 @@ class ErrorLog(models.Model):
 
 class Calculate(models.Model):
     ts = models.DateTimeField()
-    error = models.ForeignKey(ErrorLog)
+    error = models.ForeignKey(ErrorLog, null=True, blank=True,
+                              default=None)
+    started = models.BooleanField(default=False)
