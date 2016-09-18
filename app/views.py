@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.utils import timezone

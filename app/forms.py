@@ -1,3 +1,5 @@
+# coding: utf-8
+from __future__ import absolute_import
 import json
 from django import forms
 from .models import Data
