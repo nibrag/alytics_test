@@ -14,6 +14,7 @@ app.conf.update(
     CELERY_RESULT_BACKEND='amqp://guest@localhost//',
     CELERY_TASK_SERIALIZER='json',
     CELERY_RESULT_SERIALIZER='json',
+    CELERY_SEND_EVENTS=True,
     CELERY_ACCEPT_CONTENT=['json'],
     CELERY_DISABLE_RATE_LIMITS=True,
     CELERY_DEFAULT_QUEUE='default',
@@ -27,7 +28,7 @@ app.conf.update(
     },
 
     CELERY_IMPORTS=('app.views',),
-    CELERY_QUEUES=(Queue('default'),
+    CELERY_QUEUES=(Queue('default', routing_key='default'),
                    Queue('db_reader', routing_key='db_reader'),
                    Queue('calculator', routing_key='calculator'),
                    Queue('db_writer', routing_key='db_writer'))
