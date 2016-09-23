@@ -30,7 +30,8 @@ def run_calculator(request):
                                        started=True).pk
 
     for data_id in Data.objects.values_list('pk', flat=True):
-        task = chain(get_data.si(data_id), calculator.s(data_id, calc_id),
+        task = chain(get_data.si(data_id, calc_id),
+                     calculator.s(data_id, calc_id),
                      save_data.s(data_id))
         tasks.append(task)
     chord(tasks, tasks_done.s(calc_id)).delay()
@@ -39,8 +40,13 @@ def run_calculator(request):
 
 
 @shared_task
-def get_data(data_id):
-    return Data.objects.get(pk=data_id).data
+def get_data(data_id, calc_id):
+    try:
+        return Data.objects.get(pk=data_id).data
+    except Exception as exc:
+        err = ErrorLog.objects.create(ts=timezone.now(),
+                                      data_id=data_id, msg=str(exc))
+        Calculate.objects.filter(pk=calc_id).update(error=err)
 
 
 @shared_task
@@ -52,6 +58,9 @@ def save_data(result, data_id):
 
 @shared_task
 def calculator(data, data_id, calc_id):
+    if not data:
+        return None
+
     try:
         return sum(item['a'] + item['b'] for item in data)
     except Exception as exc:
