@@ -42,6 +42,11 @@ def run_calculator(request):
     return redirect(reverse('index') + '?calc_started=yes')
 
 
+def clear_logs(request):
+    ErrorLog.objects.all().delete()
+    return redirect(reverse('index'))
+
+
 def task_error(method, data_id, calc_id, exc):
     msg = '<br>'.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
     err = ErrorLog.objects.create(ts=timezone.now(),
