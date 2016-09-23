@@ -47,8 +47,8 @@ def clear_logs(request):
     return redirect(reverse('index'))
 
 
-def task_error(method, data_id, calc_id, exc):
-    msg = '<br>'.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+def task_error(method, data_id, calc_id, msg):
+    msg = msg.replace("\n", '<br>').replace(' ', '&nbsp;')
     err = ErrorLog.objects.create(ts=timezone.now(),
                                   data_id=data_id, msg=(method + ': ' + str(msg)))
     Calculate.objects.filter(pk=calc_id).update(error=err)
@@ -58,8 +58,8 @@ def task_error(method, data_id, calc_id, exc):
 def get_data(data_id, calc_id):
     try:
         return Data.objects.get(pk=data_id).data
-    except Exception as exc:
-        task_error('get_data', data_id, calc_id, exc)
+    except Exception:
+        task_error('get_data', data_id, calc_id, traceback.format_exc())
 
 
 @shared_task
@@ -76,8 +76,8 @@ def calculator(data, data_id, calc_id):
 
     try:
         return sum(item['a'] + item['b'] for item in data)
-    except Exception as exc:
-        task_error('calculator', data_id, calc_id, exc)
+    except Exception:
+        task_error('calculator', data_id, calc_id, traceback.format_exc())
 
 
 @shared_task
