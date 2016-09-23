@@ -1,4 +1,7 @@
 from __future__ import absolute_import
+
+import traceback
+
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -39,14 +42,19 @@ def run_calculator(request):
     return redirect(reverse('index') + '?calc_started=yes')
 
 
+def task_error(method, data_id, calc_id, exc):
+    msg = '<br>'.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+    err = ErrorLog.objects.create(ts=timezone.now(),
+                                  data_id=data_id, msg=(method + ': ' + str(msg)))
+    Calculate.objects.filter(pk=calc_id).update(error=err)
+
+
 @shared_task
 def get_data(data_id, calc_id):
     try:
         return Data.objects.get(pk=data_id).data
     except Exception as exc:
-        err = ErrorLog.objects.create(ts=timezone.now(),
-                                      data_id=data_id, msg=str(exc))
-        Calculate.objects.filter(pk=calc_id).update(error=err)
+        task_error('get_data', data_id, calc_id, exc)
 
 
 @shared_task
@@ -64,9 +72,7 @@ def calculator(data, data_id, calc_id):
     try:
         return sum(item['a'] + item['b'] for item in data)
     except Exception as exc:
-        err = ErrorLog.objects.create(ts=timezone.now(),
-                                      data_id=data_id, msg=str(exc))
-        Calculate.objects.filter(pk=calc_id).update(error=err)
+        task_error('calculator', data_id, calc_id, exc)
 
 
 @shared_task

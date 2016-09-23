@@ -61,7 +61,7 @@
                     {% elif calculate.started %}
                         На проверке
                     {% elif calculate.error %}
-                        Неудачно: ({{ calculate.error.msg }})
+                        Неудачно: ({{ calculate.error.msg|safe }})
                     {% else %}
                         Удачно
                     {% endif %}
@@ -83,7 +83,7 @@
                 {% for item in error_logs %}
                     <tr><td>{{ item.data.name }}</td>
                     <td>{{ item.ts }}</td>
-                    <td>{{ item.msg }}</td></tr>
+                    <td>{{ item.msg|safe }}</td></tr>
                 {% endfor %}
             {% else %}
                 <tr><td colspan="3">Нет данных</td></tr>
